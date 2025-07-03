@@ -54,6 +54,7 @@ class TaskModelTestCase(TestCase):
 
         self.assertEqual(task.is_overdue(current), False)
 
+
 class TodoViewTestCase(TestCase):
     def test_index_get(self):
         client = Client()
