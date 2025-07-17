@@ -39,6 +39,15 @@
         <li>Posted at: {{ task.posted_at }}</li>
         {% if task.due_at %} 
         <li>Due at: {{ task.due_at }}</li>
+        <li>
+          {% if task.due_at.date < today.date %}
+            <span style="color:red;">期限切れ</span>
+          {% elif task.due_at.date == today.date %}
+            <span style="color:orange;">今日が締切！</span>
+          {% else %}
+            <span style="color:green;">残り {{ task.due_at|timeuntil:today }}</span>
+          {% endif %}
+        </li>
         {% endif %}
         {% if task.completed %} 
         <li>Status: Completed</li>
