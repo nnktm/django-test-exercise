@@ -10,10 +10,12 @@ from django.utils import timezone
 def index(request):
     if request.method == 'POST':
         task = Task(title=request.POST['title'],
+                    subject=request.POST.get('subject'),
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
         return redirect(index)
     tasks = Task.objects.all()
+    subjects = Task.objects.exclude(subject__isnull=True).exclude(subject__exact='').values_list('subject', flat=True).distinct()
 
     if request.GET.get('order') == 'due':
         tasks = Task.objects.order_by('due_at')
@@ -54,6 +56,7 @@ def update(request, task_id):
         raise Http404('Task does not exist')
     if request.method == 'POST':
         task.title = request.POST['title']
+        task.subject = request.POST.get('subject')
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
         task.save()
         return redirect(detail, task_id)

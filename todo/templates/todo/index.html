@@ -18,6 +18,15 @@
         <input id="titleInput" name="title" type="text" placeholder="Input title">
       </div>
       <div>
+        <label for="subjectInput">Subject</label><br>
+        <input id="subjectInput" name="subject" type="text" placeholder="例: 数学" value="{{ task.subject|default_if_none:'' }}">
+        <datalist id="subjects">
+          {% for s in subjects %}
+            <option value="{{ s }}">{{ s }}</option>
+           {% endfor %}
+        </datalist>
+      </div>
+      <div>
         <label for="dueInput">Due at:</label><br>
         <input id="dueInput" name="due_at" type="datetime-local">
       </div>
@@ -36,6 +45,10 @@
     <div class="text">
       <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
       <ul>
+        <li>Posted at: {{ task.posted_at }}</li>
+        {% if task.subject %}
+          <li>Subject: {{ task.subject }}</li>
+        {% endif %}
         <li>Posted at: {{ task.posted_at }}</li>
         {% if task.due_at %} 
         <li>Due at: {{ task.due_at }}</li>

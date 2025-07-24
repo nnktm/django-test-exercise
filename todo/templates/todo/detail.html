@@ -11,6 +11,9 @@
   <body>
     <h1>{{ task.title }}</h1>
     <ul>
+      {% if task.subject %}
+        <li>Subject: {{ task.subject }}</li>
+      {% endif %}
       <li>Posted at: {{ task.posted_at }}</li>
       {% if task.due_at %}
       <li>Due at: {{ task.due_at }}</li>

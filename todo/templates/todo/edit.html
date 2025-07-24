@@ -76,6 +76,10 @@
         <label for="titleInput">Title</label><br>
         <input class='titleInput' id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
       </div>
+      <div class="subject">
+         <label for="subjectInput">Subject</label><br>
+         <input class='subjectInput' id="subjectInput" name="subject" type="text" placeholder="例: 数学" value="{{ task.subject|default_if_none:'' }}">
+      </div>
       <div class="due">
         <label for="dueInput">Due at:</label><br>
         <input class='dueInput' id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at |date:"Y-m-d H:i" }}">
