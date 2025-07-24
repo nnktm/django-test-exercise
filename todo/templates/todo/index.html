@@ -37,8 +37,23 @@
     <br>
 
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      <a href="{% url 'index' %}?order=due{% if selected_subject != 'all' %}&subject={{ selected_subject }}{% endif %}">Sort by Due Date</a> |
+      <a href="{% url 'index' %}?order=post{% if selected_subject != 'all' %}&subject={{ selected_subject }}{% endif %}">Sort by Posted Date</a>
+    </div>
+
+    <div>
+      <form method="get" action="{% url 'index' %}">
+        <label for="subjectFilter">教科で絞り込み:</label>
+        <select id="subjectFilter" name="subject" onchange="this.form.submit()">
+          <option value="all" {% if selected_subject == 'all' %}selected{% endif %}>すべて</option>
+          {% for subject in subjects %}
+            <option value="{{ subject }}" {% if selected_subject == subject %}selected{% endif %}>{{ subject }}</option>
+          {% endfor %}
+        </select>
+        {% if request.GET.order %}
+          <input type="hidden" name="order" value="{{ request.GET.order }}">
+        {% endif %}
+      </form>
     </div>
 
     {% for task in tasks %}
