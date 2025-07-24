@@ -10,20 +10,31 @@ from django.utils import timezone
 def index(request):
     if request.method == 'POST':
         task = Task(title=request.POST['title'],
+                    subject=request.POST.get('subject'),
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
         return redirect(index)
-    tasks = Task.objects.all()
-
-    if request.GET.get('order') == 'due':
-        tasks = Task.objects.order_by('due_at')
+    
+    selected_subject = request.GET.get('subject', 'all')
+    if selected_subject == 'all':
+        tasks = Task.objects.all()
     else:
-        tasks = Task.objects.order_by('-posted_at')
+        tasks = Task.objects.filter(subject=selected_subject)
+    
+    subjects = Task.objects.exclude(subject__isnull=True).exclude(subject__exact='').values_list('subject', flat=True).distinct()
+    
+    if request.GET.get('order') == 'due':
+        tasks = tasks.order_by('due_at')
+    else:
+        tasks = tasks.order_by('-posted_at')
 
     today = timezone.now()
 
-    context = {'tasks': tasks,
-               'today': today
+    context = {
+        'tasks': tasks,
+        'today': today,
+        'subjects': subjects,
+        'selected_subject': selected_subject
     }
     return render(request, 'todo/index.html', context)
 
@@ -54,6 +65,7 @@ def update(request, task_id):
         raise Http404('Task does not exist')
     if request.method == 'POST':
         task.title = request.POST['title']
+        task.subject = request.POST.get('subject')
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
         task.save()
         return redirect(detail, task_id)
